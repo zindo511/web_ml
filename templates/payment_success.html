@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/payment_success.css">
+    <title>Thanh toán thành công</title>
+</head>
+
+<body>
+    <div class="container">
+        <div class="success-card">
+            <div class="success-icon">
+                <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <path d="M9 12l2 2 4-4"></path>
+                </svg>
+            </div>
+
+            <h1>Thanh toán thành công!</h1>
+            <p class="success-message">Chúc mừng bạn đã mua nhà thành công. Đơn hàng của bạn đã được xác nhận.</p>
+
+            <div class="order-info">
+                <h2>Thông tin đơn hàng</h2>
+
+                <div class="info-section">
+                    <div class="info-row">
+                        <span class="label">Mã đơn hàng:</span>
+                        <span class="value">#{{ order.id }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Ngày đặt:</span>
+                        <span class="value">{{ order.order_date[:10] }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Trạng thái:</span>
+                        <span class="value status-completed">{{ order.payment_status }}</span>
+                    </div>
+                </div>
+
+                <h3>Thông tin nhà</h3>
+                <div class="house-summary">
+                    {% if order.house.image_path %}
+                    <img src="/static/{{ order.house.image_path }}" alt="Nhà" class="house-thumbnail">
+                    {% endif %}
+                    <div class="house-details">
+                        <div class="info-row">
+                            <span class="label">Mã nhà:</span>
+                            <span class="value">#{{ order.house.id }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Người bán:</span>
+                            <span class="value">{{ order.house.seller_username }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Diện tích lô:</span>
+                            <span class="value">{{ order.house.lot_area }} m²</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Diện tích sống:</span>
+                            <span class="value">{{ order.house.gr_liv_area }} m²</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Phòng ngủ:</span>
+                            <span class="value">{{ order.house.bedroom_abv_gr }}</span>
+                        </div>
+                        <div class="info-row">
+                            <span class="label">Phòng tắm:</span>
+                            <span class="value">{{ order.house.full_bath }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <h3>Thông tin thanh toán</h3>
+                <div class="info-section">
+                    <div class="info-row">
+                        <span class="label">Phương thức:</span>
+                        <span class="value">
+                            {% if order.payment_method == 'card' %}
+                            Thẻ
+                            {% elif order.payment_method == 'bank' %}
+                            Ngân hàng
+                            {% else %}
+                            Tiền mặt
+                            {% endif %}
+                        </span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Họ và tên:</span>
+                        <span class="value">{{ order.full_name }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Số điện thoại:</span>
+                        <span class="value">{{ order.phone }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span class="label">Địa chỉ:</span>
+                        <span class="value">{{ order.address }}</span>
+                    </div>
+                </div>
+
+                <h3>Chi tiết giá</h3>
+                <div class="price-details">
+                    <div class="price-row">
+                        <span>Giá bán:</span>
+                        <span>${{ "{:,.0f}".format(order.house.seller_price) }}</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Phí dịch vụ (2%):</span>
+                        <span>${{ "{:,.0f}".format(order.house.seller_price * 0.02) }}</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Tổng cộng:</span>
+                        <span>${{ "{:,.0f}".format(order.total_amount) }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="action-buttons">
+                <a href="/buyer/orders" class="btn btn-secondary">Xem lịch sử đơn hàng</a>
+                <a href="/buyer" class="btn btn-primary">Tiếp tục mua nhà</a>
+            </div>
+
+            <div class="notice">
+                <p>Chúng tôi đã gửi email xác nhận đến địa chỉ của bạn.</p>
+                <p>Người bán sẽ liên hệ với bạn trong vòng 24 giờ để hoàn tất thủ tục.</p>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>

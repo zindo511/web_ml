@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/seller.css">
+    <title>Người bán - Quản lý nhà</title>
+</head>
+
+<body>
+    <header>
+        <h1>Quản lý nhà bán</h1>
+        <div class="user-info">
+            <span>Xin chào, <strong>{{ username }}</strong> (Người bán)</span>
+            <a href="/logout" class="logout-btn">Đăng xuất</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="add-house-section">
+            <h2>Đăng bán nhà mới</h2>
+            <form method="POST" action="/seller/add" enctype="multipart/form-data">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Diện tích lô (LotArea) m²:</label>
+                        <input type="number" step="0.01" name="lot_area" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Năm xây dựng (YearBuilt):</label>
+                        <input type="number" name="year_built" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Diện tích sống (GrLivArea) m²:</label>
+                        <input type="number" step="0.01" name="gr_liv_area" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số phòng tắm (FullBath):</label>
+                        <input type="number" name="full_bath" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số phòng ngủ (BedroomAbvGr):</label>
+                        <input type="number" name="bedroom_abv_gr" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số nhà bếp (KitchenAbvGr):</label>
+                        <input type="number" name="kitchen_abv_gr" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giá bán của bạn ($):</label>
+                        <input type="number" step="0.01" name="seller_price" required>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Mô tả nhà:</label>
+                        <textarea name="description" rows="4" placeholder="Mô tả chi tiết về ngôi nhà..."></textarea>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ảnh chính:</label>
+                        <input type="file" name="image" accept="image/*" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ảnh bổ sung (có thể chọn nhiều):</label>
+                        <input type="file" name="images" accept="image/*" multiple>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Đăng bán</button>
+            </form>
+        </div>
+
+        <div class="my-houses-section">
+            <h2>Danh sách nhà của tôi</h2>
+
+            {% if my_houses %}
+            <div class="houses-list">
+                {% for house in my_houses %}
+                <div class="house-item">
+                    <div class="house-item-image">
+                        {% if house.image_path %}
+                        <img src="/static/{{ house.image_path }}" alt="Nhà">
+                        {% else %}
+                        {% endif %}
+                    </div>
+
+                    <div class="house-item-info">
+                        <div class="info-item">
+                            <strong>Diện tích lô:</strong><br>{{ house.lot_area }} m²
+                        </div>
+                        <div class="info-item">
+                            <strong>Năm xây:</strong><br>{{ house.year_built }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Diện tích sống:</strong><br>{{ house.gr_liv_area }} m²
+                        </div>
+                        <div class="info-item">
+                            <strong>Phòng tắm:</strong><br>{{ house.full_bath }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Phòng ngủ:</strong><br>{{ house.bedroom_abv_gr }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Nhà bếp:</strong><br>{{ house.kitchen_abv_gr }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Giá bán:</strong><br>${{ "{:,.0f}".format(house.seller_price) }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Giá dự đoán:</strong><br>${{ "{:,.0f}".format(house.predicted_price) }}
+                        </div>
+                        <div class="info-item">
+                            <strong>Ngày đăng:</strong><br>{{ house.created_at[:10] }}
+                        </div>
+                    </div>
+
+                    <div class="house-item-status">
+                        {% if house.status == 'available' %}
+                        <span class="status-badge status-available">Đang bán</span>
+                        <div class="action-buttons">
+                            <form>
+                                <a href="/seller/edit/{{ house.id }}" class="btn-edit">Sửa</a>
+                            </form>
+                            <form method="POST" action="/seller/delete/{{ house.id }}" style="display: inline;"
+                                onsubmit="return confirm('Bạn có chắc muốn xóa nhà này?');">
+                                <button type="submit" class="btn-delete">Xóa</button>
+                            </form>
+                        </div>
+                        {% else %}
+                        <span class="status-badge status-sold">Đã bán</span>
+                        {% endif %}
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="no-houses">
+                <p>Bạn chưa đăng bán nhà nào.</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</body>
+
+</html>

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/buyer.css">
+    <title>Người mua - Danh sách nhà</title>
+</head>
+
+<body>
+    <header>
+        <h1>Danh sách nhà đang bán</h1>
+        <div class="user-info">
+            <span>Xin chào, <strong>{{ username }}</strong> (Người mua)</span>
+            <div class="header-buttons">
+                <a href="/buyer/orders" class="orders-btn">Lịch sử đơn hàng</a>
+                <a href="/logout" class="logout-btn">Đăng xuất</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        {% if houses %}
+        <div class="houses-grid">
+            {% for house in houses %}
+            <div class="house-card">
+                <div class="house-image">
+                    {% if house.image_path %}
+                    <img src="/static/{{ house.image_path }}" alt="Nhà">
+                    {% else %}
+                    {% endif %}
+                </div>
+                <div class="house-info">
+                    <h3>Nhà #{{ house.id }}</h3>
+
+                    <div class="info-row">
+                        <span>Diện tích lô:</span>
+                        <span>{{ house.lot_area }} m²</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Năm xây:</span>
+                        <span>{{ house.year_built }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Diện tích sống:</span>
+                        <span>{{ house.gr_liv_area }} m²</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Phòng tắm:</span>
+                        <span>{{ house.full_bath }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Phòng ngủ:</span>
+                        <span>{{ house.bedroom_abv_gr }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Nhà bếp:</span>
+                        <span>{{ house.kitchen_abv_gr }}</span>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="seller-price">
+                            Giá bán: ${{ "{:,.0f}".format(house.seller_price) }}
+                        </div>
+                        <div class="predicted-price">
+                            Giá dự đoán: ${{ "{:,.0f}".format(house.predicted_price) }}
+                        </div>
+
+                        {% set diff_percent = ((house.seller_price - house.predicted_price) / house.predicted_price *
+                        100) %}
+                        {% if diff_percent > 10 %}
+                        <div class="price-diff bad">
+                            Giá cao hơn {{ "{:.1f}".format(diff_percent) }}%
+                        </div>
+                        {% elif diff_percent < -5 %} <div class="price-diff good">
+                            Giá tốt - Rẻ hơn {{ "{:.1f}".format(-diff_percent) }}%
+                    </div>
+                    {% else %}
+                    <div class="price-diff good">
+                        Giá hợp lý
+                    </div>
+                    {% endif %}
+                </div>
+
+                <div class="button-group">
+                    <a href="/house/{{ house.id }}" class="detail-btn">Xem chi tiết</a>
+                    <a href="/payment/{{ house.id }}" class="buy-btn">Mua ngay</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="no-houses">
+        <h2>Chưa có nhà nào đang bán</h2>
+        <p>Vui lòng quay lại sau!</p>
+    </div>
+    {% endif %}
+    </div>
+</body>
+
+</html>

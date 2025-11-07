@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/house_detail.css">
+    <title>Chi tiết nhà #{{ house.id }}</title>
+</head>
+
+<body>
+    <header>
+        <h1>Chi tiết nhà #{{ house.id }}</h1>
+        <div class="user-info">
+            <span>Xin chào, <strong>{{ username }}</strong></span>
+            <a href="/buyer" class="back-btn">← Quay lại danh sách</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="detail-content">
+            <!-- Gallery ảnh -->
+            <div class="image-gallery">
+                <div class="main-image">
+                    {% if house.image_path %}
+                    <img src="/static/{{ house.image_path }}" alt="Nhà" id="mainImg">
+                    {% else %}
+                    <div class="no-image"></div>
+                    {% endif %}
+                </div>
+
+                {% if house.additional_images %}
+                <div class="thumbnail-images">
+                    {% if house.image_path %}
+                    <img src="/static/{{ house.image_path }}" alt="Ảnh chính" class="thumbnail active"
+                        onclick="changeImage('/static/{{ house.image_path }}')">
+                    {% endif %}
+                    {% for img_path in house.additional_images %}
+                    <img src="/static/{{ img_path }}" alt="Ảnh {{ loop.index }}" class="thumbnail"
+                        onclick="changeImage('/static/{{ img_path }}')">
+                    {% endfor %}
+                </div>
+                {% endif %}
+            </div>
+
+            <!-- Thông tin nhà -->
+            <div class="house-details">
+                <div class="price-box">
+                    <div class="main-price">
+                        <span class="label">Giá bán:</span>
+                        <span class="value">${{ "{:,.0f}".format(house.seller_price) }}</span>
+                    </div>
+                    <div class="predicted-price">
+                        <span class="label">Giá dự đoán AI:</span>
+                        <span class="value">${{ "{:,.0f}".format(house.predicted_price) }}</span>
+                    </div>
+                    {% set diff_percent = ((house.seller_price - house.predicted_price) / house.predicted_price * 100)
+                    %}
+                    {% if diff_percent > 10 %}
+                    <div class="price-alert bad">
+                        Giá cao hơn thị trường {{ "{:.1f}".format(diff_percent) }}%
+                    </div>
+                    {% elif diff_percent < -5 %} <div class="price-alert good">
+                        Deal tốt! Rẻ hơn thị trường {{ "{:.1f}".format(-diff_percent) }}%
+                </div>
+                {% else %}
+                <div class="price-alert neutral">
+                    Giá hợp lý
+                </div>
+                {% endif %}
+            </div>
+
+            <div class="info-section">
+                <h2>Thông tin chi tiết</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div>
+                            <strong>Diện tích lô:</strong>
+                            <p>{{ house.lot_area }} m²</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div>
+                            <strong>Năm xây dựng:</strong>
+                            <p>{{ house.year_built }}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div>
+                            <strong>Diện tích sống:</strong>
+                            <p>{{ house.gr_liv_area }} m²</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div>
+                            <strong>Số phòng tắm:</strong>
+                            <p>{{ house.full_bath }}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div>
+                            <strong>Số phòng ngủ:</strong>
+                            <p>{{ house.bedroom_abv_gr }}</p>
+                        </div>
+                    </div>
+                    <div class="info-item">
+                        <div>
+                            <strong>Số nhà bếp:</strong>
+                            <p>{{ house.kitchen_abv_gr }}</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {% if house.description %}
+            <div class="description-section">
+                <h2>Mô tả</h2>
+                <p>{{ house.description }}</p>
+            </div>
+            {% endif %}
+
+            <div class="seller-section">
+                <h2>Thông tin người bán</h2>
+                <div class="seller-info">
+                    <div class="seller-avatar">{{ house.seller_username[0].upper() }}</div>
+                    <div>
+                        <p><strong>Người bán:</strong> {{ house.seller_username }}</p>
+                        <p><strong>Ngày đăng:</strong> {{ house.created_at[:10] }}</p>
+                        <p><strong>Trạng thái:</strong>
+                            {% if house.status == 'available' %}
+                            <span class="status-badge available">Đang bán</span>
+                            {% else %}
+                            <span class="status-badge sold">Đã bán</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            {% if house.status == 'available' %}
+            <div class="action-section">
+                <a href="/payment/{{ house.id }}" class="buy-now-btn">Mua ngay</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+
+    <script>
+        function changeImage(src) {
+            document.getElementById('mainImg').src = src;
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+    </script>
+</body>
+
+</html>

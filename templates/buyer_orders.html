@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/buyer_orders.css">
+    <title>Lịch sử mua hàng</title>
+</head>
+
+<body>
+    <header>
+        <h1>Lịch sử mua hàng</h1>
+        <div class="user-info">
+            <span>Xin chào, <strong>{{ username }}</strong></span>
+            <div class="header-buttons">
+                <a href="/buyer" class="header-btn">Danh sách nhà</a>
+                <a href="/logout" class="logout-btn">Đăng xuất</a>
+            </div>
+        </div>
+    </header>
+
+    <div class="container">
+        {% if orders %}
+        <div class="orders-list">
+            {% for order in orders %}
+            <div class="order-card">
+                <div class="order-header">
+                    <div class="order-id">
+                        <h3>Đơn hàng #{{ order.id }}</h3>
+                        <span class="order-date">{{ order.order_date[:10] }} {{ order.order_date[11:16] }}</span>
+                    </div>
+                    <div class="order-status {{ order.payment_status }}">
+                        {% if order.payment_status == 'completed' %}
+                        Hoàn thành
+                        {% elif order.payment_status == 'pending' %}
+                        Đang xử lý
+                        {% else %}
+                        Đã hủy
+                        {% endif %}
+                    </div>
+                </div>
+
+                <div class="order-body">
+                    <div class="house-info-section">
+                        <div class="house-image">
+                            {% if order.house.image_path %}
+                            <img src="/static/{{ order.house.image_path }}" alt="Nhà">
+                            {% else %}
+                            <div class="no-image"></div>
+                            {% endif %}
+                        </div>
+
+                        <div class="house-details">
+                            <h4>Thông tin nhà #{{ order.house.id }}</h4>
+                            <div class="details-grid">
+                                <div class="detail-item">
+                                    <span class="label">Người bán:</span>
+                                    <span class="value">{{ order.house.seller_username }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">Diện tích lô:</span>
+                                    <span class="value">{{ order.house.lot_area }} m²</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">Năm xây:</span>
+                                    <span class="value">{{ order.house.year_built }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">Diện tích sống:</span>
+                                    <span class="value">{{ order.house.gr_liv_area }} m²</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">Phòng ngủ:</span>
+                                    <span class="value">{{ order.house.bedroom_abv_gr }}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="label">Phòng tắm:</span>
+                                    <span class="value">{{ order.house.full_bath }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="payment-info">
+                        <h4>💳 Thông tin thanh toán</h4>
+                        <div class="payment-details">
+                            <div class="payment-item">
+                                <span class="label">Phương thức:</span>
+                                <span class="value">
+                                    {% if order.payment_method == 'card' %}
+                                    Thẻ
+                                    {% elif order.payment_method == 'bank' %}
+                                    Ngân hàng
+                                    {% else %}
+                                    Tiền mặt
+                                    {% endif %}
+                                </span>
+                            </div>
+                            <div class="payment-item">
+                                <span class="label">Họ tên:</span>
+                                <span class="value">{{ order.full_name }}</span>
+                            </div>
+                            <div class="payment-item">
+                                <span class="label">SĐT:</span>
+                                <span class="value">{{ order.phone }}</span>
+                            </div>
+                            <div class="payment-item">
+                                <span class="label">Địa chỉ:</span>
+                                <span class="value">{{ order.address }}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="price-section">
+                        <div class="price-row">
+                            <span>Giá bán:</span>
+                            <span>${{ "{:,.0f}".format(order.house.seller_price) }}</span>
+                        </div>
+                        <div class="price-row">
+                            <span>Phí dịch vụ (2%):</span>
+                            <span>${{ "{:,.0f}".format(order.house.seller_price * 0.02) }}</span>
+                        </div>
+                        <div class="price-row total">
+                            <span>Tổng thanh toán:</span>
+                            <span>${{ "{:,.0f}".format(order.total_amount) }}</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="order-footer">
+                    <a href="/house/{{ order.house.id }}" class="btn-view">Xem chi tiết nhà</a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <div class="summary-box">
+            <h3>Tóm tắt</h3>
+            <div class="summary-item">
+                <span>Tổng số đơn hàng:</span>
+                <span class="highlight">{{ orders|length }}</span>
+            </div>
+            <div class="summary-item">
+                <span>Tổng chi tiêu:</span>
+                <span class="highlight total-spent">
+                    ${{ "{:,.0f}".format(orders|sum(attribute='total_amount')) }}
+                </span>
+            </div>
+        </div>
+
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon"></div>
+            <h2>Chưa có đơn hàng nào</h2>
+            <p>Bạn chưa mua nhà nào. Hãy khám phá các ngôi nhà đang bán!</p>
+            <a href="/buyer" class="btn-primary">Xem danh sách nhà</a>
+        </div>
+        {% endif %}
+    </div>
+</body>
+
+</html>

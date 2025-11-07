@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/payment.css">
+    <title>Thanh toán</title>
+</head>
+
+<body>
+    <header>
+        <h1>Thanh toán</h1>
+    </header>
+
+    <div class="container">
+        <div class="payment-card">
+            <div class="house-detail">
+                <div class="house-image">
+                    {% if house.image_path %}
+                    <img src="/static/{{ house.image_path }}" alt="Nhà">
+                    {% else %}
+                    {% endif %}
+                </div>
+
+                <div class="house-info">
+                    <h2>Thông tin nhà #{{ house.id }}</h2>
+
+                    <div class="info-row">
+                        <span>Người bán:</span>
+                        <span>{{ house.seller_username }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Diện tích lô:</span>
+                        <span>{{ house.lot_area }} m²</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Năm xây dựng:</span>
+                        <span>{{ house.year_built }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Diện tích sống:</span>
+                        <span>{{ house.gr_liv_area }} m²</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Phòng tắm:</span>
+                        <span>{{ house.full_bath }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Phòng ngủ:</span>
+                        <span>{{ house.bedroom_abv_gr }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Nhà bếp:</span>
+                        <span>{{ house.kitchen_abv_gr }}</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="payment-section">
+                <h3>Thông tin thanh toán</h3>
+
+                <div class="price-summary">
+                    <div class="price-row">
+                        <span>Giá bán:</span>
+                        <span>${{ "{:,.0f}".format(house.seller_price) }}</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Giá dự đoán thị trường:</span>
+                        <span>${{ "{:,.0f}".format(house.predicted_price) }}</span>
+                    </div>
+                    <div class="price-row">
+                        <span>Phí dịch vụ (2%):</span>
+                        <span>${{ "{:,.0f}".format(house.seller_price * 0.02) }}</span>
+                    </div>
+                    <div class="price-row total">
+                        <span>Tổng thanh toán:</span>
+                        <span>${{ "{:,.0f}".format(house.seller_price * 1.02) }}</span>
+                    </div>
+                </div>
+
+                <form method="POST" action="/payment/confirm/{{ house.id }}" id="paymentForm">
+                    <div class="form-group">
+                        <label>Phương thức thanh toán:</label>
+                        <div class="payment-methods">
+                            <div class="payment-method active" onclick="selectPayment(this, 'card')">
+                                Thẻ
+                            </div>
+                            <div class="payment-method" onclick="selectPayment(this, 'bank')">
+                                Ngân hàng
+                            </div>
+                            <div class="payment-method" onclick="selectPayment(this, 'cash')">
+                                Tiền mặt
+                            </div>
+                        </div>
+                        <input type="hidden" name="payment_method" value="card">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Họ và tên:</label>
+                        <input type="text" name="full_name" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số điện thoại:</label>
+                        <input type="tel" name="phone" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Địa chỉ nhận hợp đồng:</label>
+                        <input type="text" name="address" required>
+                    </div>
+
+                    <div class="button-group">
+                        <a href="/buyer" class="btn btn-secondary">← Quay lại</a>
+                        <button type="submit" class="btn btn-primary">Xác nhận thanh toán</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function selectPayment(element, method) {
+            document.querySelectorAll('.payment-method').forEach(el => {
+                el.classList.remove('active');
+            });
+            element.classList.add('active');
+            document.querySelector('input[name="payment_method"]').value = method;
+        }
+
+        document.getElementById('paymentForm').addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (confirm('Bạn có chắc chắn muốn mua nhà này?')) {
+                this.submit();
+            }
+        });
+    </script>
+</body>
+
+</html>

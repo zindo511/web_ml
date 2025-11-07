@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style/seller_edit.css">
+    <title>Chỉnh sửa nhà</title>
+</head>
+
+<body>
+    <header>
+        <h1>Chỉnh sửa nhà #{{ house.id }}</h1>
+        <div class="user-info">
+            <span>Xin chào, <strong>{{ username }}</strong></span>
+            <a href="/seller" class="back-btn">← Quay lại</a>
+        </div>
+    </header>
+
+    <div class="container">
+        <div class="edit-section">
+            <h2>Cập nhật thông tin nhà</h2>
+
+            {% if house.image_path %}
+            <div class="current-image">
+                <p><strong>Ảnh hiện tại:</strong></p>
+                <img src="/static/{{ house.image_path }}" alt="Nhà">
+            </div>
+            {% endif %}
+
+            <form method="POST" action="/seller/edit/{{ house.id }}" enctype="multipart/form-data">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Diện tích lô (LotArea) m²:</label>
+                        <input type="number" step="0.01" name="lot_area" value="{{ house.lot_area }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Năm xây dựng (YearBuilt):</label>
+                        <input type="number" name="year_built" value="{{ house.year_built }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Diện tích sống (GrLivArea) m²:</label>
+                        <input type="number" step="0.01" name="gr_liv_area" value="{{ house.gr_liv_area }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số phòng tắm (FullBath):</label>
+                        <input type="number" name="full_bath" value="{{ house.full_bath }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số phòng ngủ (BedroomAbvGr):</label>
+                        <input type="number" name="bedroom_abv_gr" value="{{ house.bedroom_abv_gr }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Số nhà bếp (KitchenAbvGr):</label>
+                        <input type="number" name="kitchen_abv_gr" value="{{ house.kitchen_abv_gr }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Giá bán của bạn ($):</label>
+                        <input type="number" step="0.01" name="seller_price" value="{{ house.seller_price }}" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ảnh mới (tùy chọn):</label>
+                        <input type="file" name="image" accept="image/*">
+                        <div class="note">
+                            Để trống nếu không muốn thay đổi ảnh
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="submit-btn">Lưu thay đổi</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>
