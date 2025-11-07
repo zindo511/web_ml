@@ -1,16 +1,22 @@
-import pickle
+import joblib
 import os
 import pandas as pd
 from werkzeug.utils import secure_filename
 from flask import current_app
 
-FEATURE_NAMES = ['LotArea', 'YearBuilt', 'GrLivArea', 'FullBath', 'BedroomAbvGr', 'KitchenAbvGr']
+FEATURE_NAMES = [
+    'LotArea', 'GrLivArea', 'TotalBsmtSF',
+    'YearBuilt', 'YearRemodAdd',
+    'FullBath', 'BedroomAbvGr',
+    'OverallQual', 'OverallCond',
+    'GarageCars'
+]
 
 def load_model():
     try:
         model_path = current_app.config['MODEL_PATH']
-        with open(model_path, 'rb') as f:
-            return pickle.load(f)
+        model = joblib.load(model_path)
+        return model
     except Exception as e:
         print(f'Model load error: {e}')
         return None
