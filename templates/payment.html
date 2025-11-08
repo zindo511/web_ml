@@ -15,11 +15,13 @@
 
     <div class="container">
         <div class="payment-card">
+            <!-- Thông tin nhà -->
             <div class="house-detail">
                 <div class="house-image">
                     {% if house.image_path %}
-                    <img src="/static/{{ house.image_path }}" alt="Nhà">
+                        <img src="/static/{{ house.image_path }}" alt="Nhà">
                     {% else %}
+                        <img src="/static/default_house.png" alt="Nhà">
                     {% endif %}
                 </div>
 
@@ -32,50 +34,67 @@
                     </div>
                     <div class="info-row">
                         <span>Diện tích lô:</span>
-                        <span>{{ house.lot_area }} m²</span>
-                    </div>
-                    <div class="info-row">
-                        <span>Năm xây dựng:</span>
-                        <span>{{ house.year_built }}</span>
+                        <span>{{ house.LotArea }} m²</span>
                     </div>
                     <div class="info-row">
                         <span>Diện tích sống:</span>
-                        <span>{{ house.gr_liv_area }} m²</span>
+                        <span>{{ house.GrLivArea }} m²</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Tổng diện tích tầng hầm:</span>
+                        <span>{{ house.TotalBsmtSF }} m²</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Năm xây dựng:</span>
+                        <span>{{ house.YearBuilt }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Năm sửa:</span>
+                        <span>{{ house.YearRemodAdd }}</span>
                     </div>
                     <div class="info-row">
                         <span>Phòng tắm:</span>
-                        <span>{{ house.full_bath }}</span>
+                        <span>{{ house.FullBath }}</span>
                     </div>
                     <div class="info-row">
                         <span>Phòng ngủ:</span>
-                        <span>{{ house.bedroom_abv_gr }}</span>
+                        <span>{{ house.BedroomAbvGr }}</span>
                     </div>
                     <div class="info-row">
-                        <span>Nhà bếp:</span>
-                        <span>{{ house.kitchen_abv_gr }}</span>
+                        <span>Chất lượng tổng thể:</span>
+                        <span>{{ house.OverallQual }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Điều kiện tổng thể:</span>
+                        <span>{{ house.OverallCond }}</span>
+                    </div>
+                    <div class="info-row">
+                        <span>Garage:</span>
+                        <span>{{ house.GarageCars }}</span>
                     </div>
                 </div>
             </div>
 
+            <!-- Thông tin thanh toán -->
             <div class="payment-section">
                 <h3>Thông tin thanh toán</h3>
 
                 <div class="price-summary">
                     <div class="price-row">
                         <span>Giá bán:</span>
-                        <span>${{ "{:,.0f}".format(house.seller_price) }}</span>
+                        <span>{{ "{:,.0f}".format(house.seller_price) }}</span>
                     </div>
                     <div class="price-row">
                         <span>Giá dự đoán thị trường:</span>
-                        <span>${{ "{:,.0f}".format(house.predicted_price) }}</span>
+                        <span>{{ "{:,.0f}".format(house.predicted_price) }}</span>
                     </div>
                     <div class="price-row">
                         <span>Phí dịch vụ (2%):</span>
-                        <span>${{ "{:,.0f}".format(house.seller_price * 0.02) }}</span>
+                        <span>{{ "{:,.0f}".format(house.seller_price * 0.02) }}</span>
                     </div>
                     <div class="price-row total">
                         <span>Tổng thanh toán:</span>
-                        <span>${{ "{:,.0f}".format(house.seller_price * 1.02) }}</span>
+                        <span>{{ "{:,.0f}".format(house.seller_price * 1.02) }}</span>
                     </div>
                 </div>
 
@@ -83,15 +102,9 @@
                     <div class="form-group">
                         <label>Phương thức thanh toán:</label>
                         <div class="payment-methods">
-                            <div class="payment-method active" onclick="selectPayment(this, 'card')">
-                                Thẻ
-                            </div>
-                            <div class="payment-method" onclick="selectPayment(this, 'bank')">
-                                Ngân hàng
-                            </div>
-                            <div class="payment-method" onclick="selectPayment(this, 'cash')">
-                                Tiền mặt
-                            </div>
+                            <div class="payment-method active" onclick="selectPayment(this, 'card')">Thẻ</div>
+                            <div class="payment-method" onclick="selectPayment(this, 'bank')">Ngân hàng</div>
+                            <div class="payment-method" onclick="selectPayment(this, 'cash')">Tiền mặt</div>
                         </div>
                         <input type="hidden" name="payment_method" value="card">
                     </div>
@@ -122,9 +135,7 @@
 
     <script>
         function selectPayment(element, method) {
-            document.querySelectorAll('.payment-method').forEach(el => {
-                el.classList.remove('active');
-            });
+            document.querySelectorAll('.payment-method').forEach(el => el.classList.remove('active'));
             element.classList.add('active');
             document.querySelector('input[name="payment_method"]').value = method;
         }
@@ -137,5 +148,4 @@
         });
     </script>
 </body>
-
 </html>

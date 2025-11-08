@@ -48,102 +48,126 @@
                 <div class="price-box">
                     <div class="main-price">
                         <span class="label">Giá bán:</span>
-                        <span class="value">${{ "{:,.0f}".format(house.seller_price) }}</span>
+                        <span class="value">{{ "{:,.0f}".format(house.seller_price) }}</span>
                     </div>
                     <div class="predicted-price">
                         <span class="label">Giá dự đoán AI:</span>
-                        <span class="value">${{ "{:,.0f}".format(house.predicted_price) }}</span>
+                        <span class="value">{{ "{:,.0f}".format(house.predicted_price) }}</span>
                     </div>
-                    {% set diff_percent = ((house.seller_price - house.predicted_price) / house.predicted_price * 100)
-                    %}
+                    {% set diff_percent = ((house.seller_price - house.predicted_price) / house.predicted_price * 100) %}
                     {% if diff_percent > 10 %}
                     <div class="price-alert bad">
-                        Giá cao hơn thị trường {{ "{:.1f}".format(diff_percent) }}%
+                        ⚠️ Giá cao hơn thị trường {{ "{:.1f}".format(diff_percent) }}%
                     </div>
-                    {% elif diff_percent < -5 %} <div class="price-alert good">
-                        Deal tốt! Rẻ hơn thị trường {{ "{:.1f}".format(-diff_percent) }}%
+                    {% elif diff_percent < -5 %}
+                    <div class="price-alert good">
+                        ✅ Deal tốt! Rẻ hơn thị trường {{ "{:.1f}".format(-diff_percent) }}%
+                    </div>
+                    {% else %}
+                    <div class="price-alert neutral">
+                        ✓ Giá hợp lý
+                    </div>
+                    {% endif %}
                 </div>
-                {% else %}
-                <div class="price-alert neutral">
-                    Giá hợp lý
+
+                <div class="info-section">
+                    <h2>📋 Thông tin chi tiết</h2>
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <div>
+                                <strong>🏡 Diện tích lô (LotArea):</strong>
+                                <p>{{ house.lot_area }} m²</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>🏠 Diện tích sống (GrLivArea):</strong>
+                                <p>{{ house.gr_liv_area }} m²</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>🔽 Diện tích tầng hầm (TotalBsmtSF):</strong>
+                                <p>{{ house.total_bsmt_sf }} m²</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>📅 Năm xây dựng (YearBuilt):</strong>
+                                <p>{{ house.year_built }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>🔧 Năm cải tạo (YearRemodAdd):</strong>
+                                <p>{{ house.year_remod_add }}</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>🚿 Số phòng tắm (FullBath):</strong>
+                                <p>{{ house.full_bath }} phòng</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>🛏️ Số phòng ngủ (BedroomAbvGr):</strong>
+                                <p>{{ house.bedroom_abv_gr }} phòng</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>⭐ Chất lượng tổng thể (OverallQual):</strong>
+                                <p>{{ house.overall_qual }}/10</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>🔍 Tình trạng tổng thể (OverallCond):</strong>
+                                <p>{{ house.overall_cond }}/10</p>
+                            </div>
+                        </div>
+                        <div class="info-item">
+                            <div>
+                                <strong>🚗 Số chỗ đỗ xe (GarageCars):</strong>
+                                <p>{{ house.garage_cars }} xe</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {% if house.description %}
+                <div class="description-section">
+                    <h2>📝 Mô tả</h2>
+                    <p>{{ house.description }}</p>
+                </div>
+                {% endif %}
+
+                <div class="seller-section">
+                    <h2>👤 Thông tin người bán</h2>
+                    <div class="seller-info">
+                        <div class="seller-avatar">{{ house.seller_username[0].upper() }}</div>
+                        <div>
+                            <p><strong>Người bán:</strong> {{ house.seller_username }}</p>
+                            <p><strong>Ngày đăng:</strong> {{ house.created_at[:10] if house.created_at else 'N/A' }}</p>
+                            <p><strong>Trạng thái:</strong>
+                                {% if house.status == 'available' %}
+                                <span class="status-badge available">Đang bán</span>
+                                {% else %}
+                                <span class="status-badge sold">Đã bán</span>
+                                {% endif %}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                {% if house.status == 'available' %}
+                <div class="action-section">
+                    <a href="/payment/{{ house.id }}" class="buy-now-btn">💳 Mua ngay</a>
                 </div>
                 {% endif %}
             </div>
-
-            <div class="info-section">
-                <h2>Thông tin chi tiết</h2>
-                <div class="info-grid">
-                    <div class="info-item">
-                        <div>
-                            <strong>Diện tích lô:</strong>
-                            <p>{{ house.lot_area }} m²</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div>
-                            <strong>Năm xây dựng:</strong>
-                            <p>{{ house.year_built }}</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div>
-                            <strong>Diện tích sống:</strong>
-                            <p>{{ house.gr_liv_area }} m²</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div>
-                            <strong>Số phòng tắm:</strong>
-                            <p>{{ house.full_bath }}</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div>
-                            <strong>Số phòng ngủ:</strong>
-                            <p>{{ house.bedroom_abv_gr }}</p>
-                        </div>
-                    </div>
-                    <div class="info-item">
-                        <div>
-                            <strong>Số nhà bếp:</strong>
-                            <p>{{ house.kitchen_abv_gr }}</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {% if house.description %}
-            <div class="description-section">
-                <h2>Mô tả</h2>
-                <p>{{ house.description }}</p>
-            </div>
-            {% endif %}
-
-            <div class="seller-section">
-                <h2>Thông tin người bán</h2>
-                <div class="seller-info">
-                    <div class="seller-avatar">{{ house.seller_username[0].upper() }}</div>
-                    <div>
-                        <p><strong>Người bán:</strong> {{ house.seller_username }}</p>
-                        <p><strong>Ngày đăng:</strong> {{ house.created_at[:10] }}</p>
-                        <p><strong>Trạng thái:</strong>
-                            {% if house.status == 'available' %}
-                            <span class="status-badge available">Đang bán</span>
-                            {% else %}
-                            <span class="status-badge sold">Đã bán</span>
-                            {% endif %}
-                        </p>
-                    </div>
-                </div>
-            </div>
-
-            {% if house.status == 'available' %}
-            <div class="action-section">
-                <a href="/payment/{{ house.id }}" class="buy-now-btn">Mua ngay</a>
-            </div>
-            {% endif %}
         </div>
-    </div>
     </div>
 
     <script>

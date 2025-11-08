@@ -55,19 +55,19 @@
                         </div>
                         <div class="info-row">
                             <span class="label">Diện tích lô:</span>
-                            <span class="value">{{ order.house.lot_area }} m²</span>
+                            <span class="value">{{ order.house.LotArea }} m²</span>
                         </div>
                         <div class="info-row">
                             <span class="label">Diện tích sống:</span>
-                            <span class="value">{{ order.house.gr_liv_area }} m²</span>
+                            <span class="value">{{ order.house.GrLivArea }} m²</span>
                         </div>
                         <div class="info-row">
                             <span class="label">Phòng ngủ:</span>
-                            <span class="value">{{ order.house.bedroom_abv_gr }}</span>
+                            <span class="value">{{ order.house.BedroomAbvGr }}</span>
                         </div>
                         <div class="info-row">
                             <span class="label">Phòng tắm:</span>
-                            <span class="value">{{ order.house.full_bath }}</span>
+                            <span class="value">{{ order.house.FullBath }}</span>
                         </div>
                     </div>
                 </div>
@@ -104,15 +104,15 @@
                 <div class="price-details">
                     <div class="price-row">
                         <span>Giá bán:</span>
-                        <span>${{ "{:,.0f}".format(order.house.seller_price) }}</span>
+                        <span>{{ "{:,.0f}".format(order.house.seller_price) }}</span>
                     </div>
                     <div class="price-row">
                         <span>Phí dịch vụ (2%):</span>
-                        <span>${{ "{:,.0f}".format(order.house.seller_price * 0.02) }}</span>
+                        <span>{{ "{:,.0f}".format(order.house.seller_price * 0.02) }}</span>
                     </div>
                     <div class="price-row total">
                         <span>Tổng cộng:</span>
-                        <span>${{ "{:,.0f}".format(order.total_amount) }}</span>
+                        <span>{{ "{:,.0f}".format(order.total_amount) }}</span>
                     </div>
                 </div>
             </div>
