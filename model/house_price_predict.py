@@ -27,11 +27,6 @@ x = data[SELECTED_FEATURES]
 y = np.log1p(data[target])
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.2, random_state=42)
 
-num_transformer = Pipeline(steps=[
-    ('imputer', SimpleImputer(strategy='median')),
-    ('scaler', StandardScaler())
-])
-
 
 pipeline = Pipeline(steps=[
     ('imputer', SimpleImputer(strategy='median')),
