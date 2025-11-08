@@ -54,17 +54,13 @@
                         <span>Phòng ngủ:</span>
                         <span>{{ house.bedroom_abv_gr }}</span>
                     </div>
-                    <div class="info-row">
-                        <span>Nhà bếp:</span>
-                        <span>{{ house.kitchen_abv_gr }}</span>
-                    </div>
 
                     <div class="price-section">
                         <div class="seller-price">
-                            Giá bán: $ "{:,.0f}".format(house.seller_price)
+                            Giá bán: {{ "{:,.0f} $".format(house.seller_price) }}
                         </div>
                         <div class="predicted-price">
-                            Giá dự đoán: $ "{:,.0f}".format(house.predicted_price) }}
+                            Giá dự đoán: {{"{:,.0f} $".format(house.predicted_price) }}
                         </div>
 
                         {% set diff_percent = ((house.seller_price - house.predicted_price) / house.predicted_price *

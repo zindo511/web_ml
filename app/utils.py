@@ -1,5 +1,7 @@
 import joblib
 import os
+
+import numpy as np
 import pandas as pd
 from werkzeug.utils import secure_filename
 from flask import current_app
@@ -27,7 +29,8 @@ def predict_price(model, features):
     try:
         X = pd.DataFrame([features], columns=FEATURE_NAMES)
         prediction = model.predict(X)[0]
-        return float(prediction)
+        real_price = np.expm1(prediction)
+        return float(real_price)
     except Exception as e:
         print(f'Prediction error: {e}')
         return 0.0
